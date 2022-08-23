@@ -1,0 +1,22 @@
+{# templates/erd/base.gv #}
+
+digraph G {
+    fontname="Helvetica,Arial,sans-serif"
+    node [fontname="Helvetica,Arial,sans-serif"]
+    edge [fontname="Helvetica,Arial,sans-serif"]
+
+    {% for sg in subgraphs %}
+    subgraph cluster_{{sg.name}} {
+        label = {{sg.label}};
+        style=filled;
+        color="{{sg.bgcolor}}";
+        node [style=filled, color="{{sg.nodebgcolor}}"];
+
+        {% for node in sg.nodes %}{{node.name}} [label="{{node.label}}", color="{{node.strokecolor}}", fillcolor="{{node.bgcolor}}"];
+        {% endfor %}
+
+        {% for edge in sg.edges %}{{edge.source}} -> {{edge.target}} ;
+        {% endfor %}
+    }
+    {% endfor %}
+}
