@@ -2,13 +2,8 @@ from jinja2 import (
     FileSystemLoader, 
     Environment
 )
+import fire
 
-templateLoader = Environment(
-    loader=FileSystemLoader(searchpath="templates/gv/")
-    )
-
-ERD_TEMPLATE = "erd.gv"
-ERD_DOT_FILE = "erd/kg.dot"
 
 data = {
     "subgraphs": [
@@ -40,8 +35,25 @@ data = {
         }
     ]
 }
-tmpl = templateLoader.get_template(name=ERD_TEMPLATE)
-dotfile = tmpl.render(data)
-with open(ERD_DOT_FILE, 'w') as fh:
-    fh.write(dotfile)
-print(f"Generated dot file: {ERD_DOT_FILE}")
+
+def render(
+    templatefile: str,
+    dotfile: str):
+
+    templateLoader = Environment(
+        loader=FileSystemLoader(searchpath="templates/gv/")
+        )
+
+    tmpl = templateLoader.get_template(name=templatefile)
+    rendered = tmpl.render(data)
+    with open(dotfile, 'w') as fh:
+        fh.write(rendered)
+    print(f"Generated dot file: {dotfile}")
+
+def test():
+    ERD_TEMPLATE = "erd.gv"
+    ERD_DOT_FILE = "erd/kg.dot"
+    render(templatefile=ERD_TEMPLATE, dotfile=ERD_DOT_FILE)
+
+if __name__=="__main__":
+    fire.Fire(render)
